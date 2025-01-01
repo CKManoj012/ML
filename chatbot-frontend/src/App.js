@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 
+const BASE_URL = 'https://diet-chatbot-backend-a7h3d6ayb4aze0d8.centralindia-01.azurewebsites.net';
+
+
 function App() {
   const [input, setInput] = useState(""); // User input
   const [messages, setMessages] = useState([]); // Chat history
@@ -21,7 +24,7 @@ function App() {
     setIsTyping(true); // Show typing indicator
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/chat", {
+      const response = await axios.post(`${BASE_URL}/chat`, {
         question: input,
       });
 
