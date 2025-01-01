@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 
 const BASE_URL = 'https://diet-chatbot-backend-a7h3d6ayb4aze0d8.centralindia-01.azurewebsites.net';
+// const BASE_URL = 'http://localhost:8000';
 
 function App() {
   const [input, setInput] = useState(""); // User input

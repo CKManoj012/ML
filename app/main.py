@@ -11,6 +11,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://polite-hill-0d3ee1a00.4.azurestaticapps.net"],  # Update to specific domains in production
+    # allow_origins=["*"],  # Update to specific domains in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -26,11 +27,21 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     answer: str
 
-def format_response(raw_response: str) -> str:
-    """Format chatbot responses for better readability."""
-    # Add a new line after each sentence
-    formatted = raw_response.replace(". ", ".\n")
-    return formatted
+# def format_response(raw_response: str) -> str:
+#     """Format chatbot responses for better readability."""
+#     # Split by sentences
+#     sentences = raw_response.split(". ")
+    
+#     # Add bullet points for multiple sentences or paragraphs
+#     if len(sentences) > 2:  # If more than two sentences, use bullet points
+#         formatted = "\n".join([f"- {sentence.strip()}." for sentence in sentences if sentence.strip()])
+#     else:  # For single or short responses, add line breaks
+#         formatted = "\n".join([sentence.strip() for sentence in sentences if sentence.strip()])
+    
+#     # Replace any remaining double newlines
+#     formatted = formatted.replace("\n\n", "\n")
+    
+#     return formatted
 
 @app.get("/")
 def read_root():
@@ -48,8 +59,8 @@ def chat(request: ChatRequest):
         # Get chatbot response
         answer = chatbot.run(request.question)
         # Format the response
-        formatted_response = format_response(answer)
-        return ChatResponse(answer=formatted_response)
+        # formatted_response = format_response(answer)
+        return ChatResponse(answer=answer)
     except Exception as e:
         # Handle chatbot or server errors
         return JSONResponse(
