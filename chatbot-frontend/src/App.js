@@ -3,7 +3,6 @@ import axios from "axios";
 
 const BASE_URL = 'https://diet-chatbot-backend-a7h3d6ayb4aze0d8.centralindia-01.azurewebsites.net';
 
-
 function App() {
   const [input, setInput] = useState(""); // User input
   const [messages, setMessages] = useState([]); // Chat history
@@ -18,9 +17,11 @@ function App() {
   }, [messages]);
 
   const sendMessage = async () => {
-    if (!input) return;
+    if (!input.trim()) return;
 
+    // Add user's message to the chat
     setMessages((prev) => [...prev, { sender: "user", text: input }]);
+    setInput(""); // Clear the input field
     setIsTyping(true); // Show typing indicator
 
     try {
@@ -28,20 +29,23 @@ function App() {
         question: input,
       });
 
+      // Format bot's response into paragraphs based on newlines
+      const formattedResponse = response.data.answer.split("\n").map((line) => line.trim()).filter(Boolean);
+
+      // Add bot's response to the chat
       setMessages((prev) => [
         ...prev,
-        { sender: "bot", text: response.data.answer },
+        { sender: "bot", text: formattedResponse },
       ]);
     } catch (error) {
       console.error("Error communicating with chatbot:", error);
       setMessages((prev) => [
         ...prev,
-        { sender: "bot", text: "Sorry, something went wrong!" },
+        { sender: "bot", text: ["Sorry, something went wrong!"] },
       ]);
     }
 
     setIsTyping(false); // Hide typing indicator
-    setInput(""); // Clear the input field
   };
 
   return (
@@ -57,7 +61,7 @@ function App() {
       <div className="card w-75" style={{ backgroundColor: "#2c2c2c" }}>
         <div className="card-body">
           <h1 className="text-center mb-4" style={{ color: "#fff" }}>
-            Chatbot
+            Diet Coach Chatbot
           </h1>
           <div
             ref={chatContainerRef} // Attach the ref to the chat container
@@ -85,7 +89,11 @@ function App() {
                   }`}
                   style={{ maxWidth: "75%" }}
                 >
-                  {msg.text}
+                  {Array.isArray(msg.text) ? (
+                    msg.text.map((line, idx) => <p key={idx}>{line}</p>)
+                  ) : (
+                    <p>{msg.text}</p>
+                  )}
                 </div>
               </div>
             ))}
